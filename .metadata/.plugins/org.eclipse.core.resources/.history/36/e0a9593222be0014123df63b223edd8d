@@ -1,0 +1,16 @@
+package logging;
+
+import java.io.FileOutputStream;
+
+
+public class Logger {
+FileOutputStream fileToWrite;
+	
+	public Logger(FileOutputStream fileToWrite){
+		this.fileToWrite = fileToWrite;
+	}
+	
+	public Logger(){
+		this.fileToWrite = Standard.in;
+	}
+}

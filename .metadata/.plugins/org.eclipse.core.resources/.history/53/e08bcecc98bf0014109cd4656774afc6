@@ -1,0 +1,22 @@
+package info;
+
+import org.json.simple.JSONObject;
+
+public class TreeInfo {
+	private int forestDepth;
+	private String forestName;
+	private int left;
+	private int right;
+	private int id;
+
+	public TreeInfo(JSONObject forestRules) {
+		forestDepth = (int) forestRules.get("right");
+		forestName = (String) forestRules.get("name");
+		id = (int) forestRules.get("id");
+		left = (int) forestRules.get("left");
+		
+	}
+	
+	public int update_active_node(Series series)
+
+}

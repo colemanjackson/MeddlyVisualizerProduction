@@ -1,0 +1,14 @@
+package info;
+
+public class TreeInfo {
+	private int nodeCount;
+	private String forestName;
+	private int left;
+	private int right;
+	private int id;
+
+	public TreeInfo() {
+
+	}
+
+}
