@@ -1,0 +1,91 @@
+package info;
+
+import javafx.scene.chart.XYChart;
+import javafx.scene.chart.XYChart.Series;
+
+import org.json.simple.JSONObject;
+
+/**
+ * Forest Information Class used to build and update chart series information for visualizer
+ * @author Coleman
+ */
+public class ForestInfo {
+	
+	private int forestDepth;
+	private String forestName;
+	private int left;
+	private int right;
+	private int id;
+	private Series series;
+	
+	
+	/**
+	 * 
+	 * @param forestRules
+	 *  A JSON object in the form of { "forest_id": 1, "name": "forest name", "left": 1, "right": 25, "an": [0, 0] }
+	 */
+	public ForestInfo(JSONObject forestRules) {
+
+		forestDepth = (int) forestRules.get("right");
+		forestName = (String) forestRules.get("name");
+		id = (int) forestRules.get("forest_id");
+		left = (int) forestRules.get("left");
+		
+
+	}
+
+	public void setForestDepth(int newForestDepth) {
+		this.forestDepth = newForestDepth;
+	}
+
+	public void setForestName(String newForestName) {
+		this.forestName = newForestName;
+	}
+
+	public void setLeftMostNode(int left) {
+		this.left = left;
+	}
+
+	public void setRightMostNode(int right) {
+		this.right = right;
+	}
+
+	public void setForestID(int id) {
+		this.id = id;
+	}
+
+	public int getForestDepth() {
+		return forestDepth;
+	}
+
+	public String getForestName() {
+		return forestName;
+	}
+
+	public int getRightCount() {
+		return right;
+	}
+
+	public int getLeftCount() {
+		return left;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public int updateActiveNode(int nodeLevel, int updateInfo) {
+		return 0;
+	}
+	
+	public void setSeries(int numberOfInitialNodes){
+		for(int i = 0; i < numberOfInitialNodes; i++){
+			series.getData().add(new XYChart.Data(1, "" + i));
+		}
+	}
+	
+	public Series getSeries(){
+		return series;
+	}
+
+}

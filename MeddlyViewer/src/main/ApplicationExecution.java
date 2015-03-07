@@ -1,14 +1,8 @@
 package main;
 
-import org.json.simple.*;
-import org.json.simple.parser.JSONParser;
+import info.LeafInfo;
 
-import com.sun.org.apache.xerces.internal.impl.xpath.regex.ParseException;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -26,10 +20,8 @@ import javafx.util.Duration;
 import logic.ForestInfoParser;
 
 public class ApplicationExecution extends Application {
-	ForestInfoParser parser = new ForestInfoParser();
-	final static String itemA = "A";
-	final static String itemB = "B";
-	final static String itemC = "F";
+	private LeafInfo info;
+	private static ForestInfoParser applicationInfoParser = new ForestInfoParser();
 
 	@Override
 	public void start(Stage stage) {
@@ -41,12 +33,16 @@ public class ApplicationExecution extends Application {
 		xAxis.setLabel("Number of nodes");
 		xAxis.setTickLabelRotation(90);
 		yAxis.setLabel("Forest Level");
+		XYChart.Series series = null;
 
-		XYChart.Series series1 = new XYChart.Series();
-		series1.setName("This could work....");
-
-		for (int i = 0; i < 5000; i++)
-			series1.getData().add(new XYChart.Data(2, "" + i));
+		try {
+			series = applicationInfoParser.initalizeForestInfoFromJsonFile();
+			info = applicationInfoParser.readNodeInfoFromJsonFile();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (org.json.simple.parser.ParseException e) {
+			e.printStackTrace();
+		}
 
 		Timeline tl = new Timeline();
 		tl.getKeyFrames().add(
@@ -56,29 +52,33 @@ public class ApplicationExecution extends Application {
 							public void handle(ActionEvent actionEvent) {
 								XYChart.Series<Number, String> series = bc
 										.getData().get(0);
-								for (XYChart.Data<Number, String> data : series
-										.getData()) {
-									data.setXValue(Math.random() * 1000);
+								try {
+									while (info.hasNext()) {
+										XYChart.Data<Number, String> x = (XYChart.Data<Number, String>) series
+												.getData()
+												.get((int) (info.getLevel() - 1));
+										x.setXValue(x.getXValue().longValue()
+												+ info.getAnc());
+									}
+
+								} catch (Exception e) {
+									e.printStackTrace();
 								}
 
 							}
 						}));
 		tl.setCycleCount(Animation.INDEFINITE);
 		tl.play();
-
 		Scene scene = new Scene(bc, 800, 600);
-		bc.getData().addAll(series1);
+		bc.getData().addAll(series);
 		stage.setScene(scene);
 		stage.show();
 	}
 
 	public static void main(String[] args)
 			throws org.json.simple.parser.ParseException {
-		ForestInfoParser applicationInfoParser = new ForestInfoParser();
-		applicationInfoParser.readJsonFile();
 
 		launch(args);
 
 	}
-
 }
