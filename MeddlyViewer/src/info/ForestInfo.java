@@ -2,43 +2,40 @@ package info;
 
 import javafx.scene.chart.XYChart;
 import javafx.scene.chart.XYChart.Series;
+
 import org.json.simple.JSONObject;
 
 /**
- * Forest Information Class used to build and update chart series information for visualizer
+ * Forest Information Class used to build and update chart series information
+ * for visualizer
+ * 
  * @author Coleman
  */
 public class ForestInfo {
-	
-	private Long forestDepth;
+
+	private int forestDepth;
 	private String forestName;
-	private Long left;
-	private Long right;
-	private Long id;
+	private int left;
+	private int right;
+	private int id;
 	private Series series;
-	
-	
-	/**
-	 * 
-	 * @param forestRules
-	 *  A JSON object in the form of { "forest_id": 1, "name": "forest name", "left": 1, "right": 25, "an": [0, 0] }
-	 */
-	public ForestInfo(JSONObject forestRules) {
 
-		forestDepth = (Long) forestRules.get("right");
-		forestName = (String) forestRules.get("name");
-		id = (Long) forestRules.get("forest_id");
-		left = (Long) forestRules.get("left");
-		series = this.setSeries(forestDepth);
-		
-
+	public ForestInfo(int id2, String name, int leftCount, int forestDepth) {
+		this.forestDepth = forestDepth;
+		this.forestName = name;
+		this.id = id2;
+		left = leftCount;
+		right = forestDepth;
+		series = this.setSeries(this.forestDepth);
 	}
 
 	/**
+	 * Sets the forest depth if necessary.
 	 * 
 	 * @param newForestDepth
+	 *            A long representing the forest depth.
 	 */
-	public void setForestDepth(Long newForestDepth) {
+	public void setForestDepth(int newForestDepth) {
 		this.forestDepth = newForestDepth;
 	}
 
@@ -54,7 +51,7 @@ public class ForestInfo {
 	 * 
 	 * @param left
 	 */
-	public void setLeftMostNode(Long left) {
+	public void setLeftMostNode(int left) {
 		this.left = left;
 	}
 
@@ -62,7 +59,7 @@ public class ForestInfo {
 	 * 
 	 * @param right
 	 */
-	public void setRightMostNode(Long right) {
+	public void setRightMostNode(int right) {
 		this.right = right;
 	}
 
@@ -70,7 +67,7 @@ public class ForestInfo {
 	 * 
 	 * @param id
 	 */
-	public void setForestID(Long id) {
+	public void setForestID(int id) {
 		this.id = id;
 	}
 
@@ -78,7 +75,7 @@ public class ForestInfo {
 	 * 
 	 * @return
 	 */
-	public Long getForestDepth() {
+	public int getForestDepth() {
 		return forestDepth;
 	}
 
@@ -94,7 +91,7 @@ public class ForestInfo {
 	 * 
 	 * @return
 	 */
-	public Long getRightCount() {
+	public int getRightCount() {
 		return right;
 	}
 
@@ -102,7 +99,7 @@ public class ForestInfo {
 	 * 
 	 * @return
 	 */
-	public Long getLeftCount() {
+	public int getLeftCount() {
 		return left;
 	}
 
@@ -110,7 +107,7 @@ public class ForestInfo {
 	 * 
 	 * @return
 	 */
-	public Long getId() {
+	public int getId() {
 		return id;
 	}
 
@@ -119,23 +116,25 @@ public class ForestInfo {
 	 * @param numberOfInitialNodes
 	 * @return
 	 */
-	public Series setSeries(Long numberOfInitialNodes){
-		
+
+	public Series setSeries(int numberOfInitialNodes) {
+		// TODO: Remove this from set series, as series is no longer inherit to
+		// the Forest Info Class.
 		XYChart.Series series = new XYChart.Series();
-		series.setName(this.getForestName());		
-		for(int i = 0; i < numberOfInitialNodes; i++){
-			series.getData().add(new XYChart.Data(1, "" + i));
+		series.setName(this.getForestName());
+		for (int i = 0; i < numberOfInitialNodes; i++) {
+			series.getData().add(new XYChart.Data(0, "" + i));
 		}
-		
+
 		return series;
-		
+
 	}
-	
+
 	/**
 	 * 
 	 * @return
 	 */
-	public Series getSeries(){
+	public Series getSeries() {
 		return series;
 	}
 
