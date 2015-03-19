@@ -1,0 +1,171 @@
+package logic;
+
+import info.ForestInfo;
+import info.LeafInfo;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.XYChart;
+import javafx.scene.chart.XYChart.Series;
+import javafx.util.Duration;
+
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
+/**
+ * A Static class which parses the JSON information from Meddly for animation.
+ * 
+ * @author Coleman
+ *
+ */
+public class ForestInfoParser {
+	private static ForestInfo forestInfo = null;
+	private static BufferedReader br = null;
+
+	/**
+	 * 
+	 * @throws FileNotFoundException
+	 */
+	public ForestInfoParser() {
+		try {
+			ForestInfoParser.br = new BufferedReader(new FileReader("qc5.txt"));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	/**
+	 * 
+	 * @return
+	 * @throws IOException
+	 *             4
+	 */
+	public static Series initalizeForestInfoFromJsonFile() throws IOException {
+		try {
+			String fileType = br.readLine();
+			br.readLine(); // consume comment line
+			System.out.println(fileType);// error checking
+			String stringOfForestInfo = br.readLine();
+			System.out.println("Record:\t" + stringOfForestInfo);
+			String name = "";
+			if (stringOfForestInfo.indexOf(4) == '"') {
+				int index = 5;
+				while (stringOfForestInfo.indexOf(index) != '"') {
+					name += stringOfForestInfo.indexOf(index);
+					index++;
+				}
+			} else {
+				name = "Untitled";
+			}
+			
+			System.out.println(name);
+//			forestDepth = (Long) forestRules.get("right");
+//			forestName = (String) forestRules.get("name");
+			int id = (int) stringOfForestInfo.indexOf(2);
+			System.out.println(id);
+			left = (Long) forestRules.get("left");
+			series = this.setSeries(forestDepth);
+
+			forestInfo = new ForestInfo();
+			return forestInfo.getSeries();
+
+		} catch (Exception e) {
+			if (br != null)
+				br.close();
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	/**
+	 * 
+	 * @return
+	 * @throws org.json.simple.parser.ParseException
+	 * @throws IOException
+	 */
+	public static LeafInfo readNodeInfoFromJsonFile()
+			throws org.json.simple.parser.ParseException, IOException {
+		LeafInfo info = new LeafInfo();
+
+		try {
+
+			String sCurrentLine;
+			while ((sCurrentLine = br.readLine()) != null) {
+				if (br.ready() == false)
+					break;
+				System.out.println("Record:\t" + sCurrentLine);
+				Object obj;
+				JSONObject jsonObject = new JSONObject();
+				if (!sCurrentLine.startsWith("{"))
+					break;
+				obj = parser.parse(sCurrentLine);
+				jsonObject = (JSONObject) obj;
+				if (jsonObject.get("f") != null) {
+					Long id = (Long) jsonObject.get("f");
+					System.out.println(id);
+					Long level = (Long) jsonObject.get("l");
+					System.out.println(level);
+					Long anc = (Long) jsonObject.get("anc");
+					System.out.println(anc);
+					info.addAnc(anc);
+					info.addLevel(level);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		br.close();
+		return info;
+	}
+
+	public static Timeline buildTimeLineFromLeafInfo(Timeline tl,
+			LeafInfo info, BarChart<Number, String> bc) {
+		// TODO Auto-generated method stub
+		XYChart.Series<Number, String> series = bc.getData().get(0);
+		while (info.hasNext()) {
+			tl.getKeyFrames().addAll(
+					new KeyFrame(Duration.millis(100),
+							new EventHandler<ActionEvent>() {
+								@Override
+								public void handle(ActionEvent actionEvent) {
+
+									try {
+
+										XYChart.Data<Number, String> x = (XYChart.Data<Number, String>) series
+												.getData()
+												.get((int) (info.getLevel() - 1));
+										x.setXValue(x.getXValue().longValue()
+												+ info.getAnc());
+
+									} catch (Exception e) {
+										e.printStackTrace();
+									}
+
+								}
+							}));
+		}
+
+		return tl;
+
+	}
+
+	/**
+	 * Used for debugging purposes, returns unused Forest Info
+	 * 
+	 * @return
+	 */
+	public ForestInfo getForestInfo() {
+		return forestInfo; // TODO: Delete Soon
+	}
+}
