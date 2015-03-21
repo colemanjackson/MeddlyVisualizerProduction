@@ -18,12 +18,13 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import logic.ForestInfoParser;
 
 public class ApplicationExecution extends Application {
-	private LeafInfo info;
 	private static ForestInfoParser applicationInfoParser = new ForestInfoParser();
 
 	@SuppressWarnings("unchecked")
@@ -41,15 +42,14 @@ public class ApplicationExecution extends Application {
 		bc.setMinHeight(600);
 		Button btnStart = new Button("Start");
 		Button btnStop = new Button("Stop");
-		Button btnPause = new Button("Pause");
 		btnStart.setMaxSize(150, 50);
 		btnStop.setMaxSize(150, 50);
-		btnPause.setMaxSize(150, 50);
 		xAxis.setLabel("Number of nodes");
 		xAxis.setTickLabelRotation(90);
 		yAxis.setLabel("Forest Level");
 		XYChart.Series series = null;
-
+		Text status = new Text(10, 50, "No Update");
+		status.setFont(new Font(20));
 		// define handlers for control buttons
 		btnStart.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -64,14 +64,6 @@ public class ApplicationExecution extends Application {
 			public void handle(ActionEvent arg0) {
 				tl.stop();
 
-			}
-
-		});
-
-		btnPause.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent arg0) {
-				tl.pause();
 			}
 
 		});
@@ -99,6 +91,8 @@ public class ApplicationExecution extends Application {
 									if (currentInfo.size() > 0) {
 										int anc = currentInfo.get(1);
 										int level = currentInfo.get(2);
+										status.setText(applicationInfoParser
+												.getStatus().toString());
 
 										XYChart.Data<Number, String> x = (XYChart.Data<Number, String>) series
 												.getData().get(
@@ -119,6 +113,9 @@ public class ApplicationExecution extends Application {
 														+ (x.getXValue()
 																.longValue()));
 
+									} else {
+										status.setText("Visualization Complete");
+										tl.stop();
 									}
 
 								} catch (Exception e) {
@@ -130,7 +127,7 @@ public class ApplicationExecution extends Application {
 		tl.setCycleCount(Animation.INDEFINITE);
 
 		VBox contentPane = new VBox();
-		contentPane.getChildren().addAll(bc, btnStart, btnStop, btnPause);
+		contentPane.getChildren().addAll(bc, btnStart, btnStop, status);
 		Scene scene = new Scene(contentPane, 800, 600);
 		bc.getData().addAll(series);
 		stage.setScene(scene);
@@ -139,7 +136,6 @@ public class ApplicationExecution extends Application {
 
 	public static void main(String[] args)
 			throws org.json.simple.parser.ParseException {
-
 		launch(args);
 
 	}
