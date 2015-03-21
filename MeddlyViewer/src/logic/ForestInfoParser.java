@@ -1,7 +1,6 @@
 package logic;
 
 import info.ForestInfo;
-import info.LeafInfo;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -9,6 +8,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javafx.scene.text.*;
 import javafx.scene.chart.XYChart.Series;
 
 /**
@@ -18,6 +18,7 @@ import javafx.scene.chart.XYChart.Series;
  *
  */
 public class ForestInfoParser {
+	private String status = "Initalized";
 	private static ForestInfo forestInfo = null;
 	private static BufferedReader br = null;
 
@@ -27,7 +28,7 @@ public class ForestInfoParser {
 	 */
 	public ForestInfoParser() {
 		try {
-			ForestInfoParser.br = new BufferedReader(new FileReader("qc9.txt"));
+			ForestInfoParser.br = new BufferedReader(new FileReader("qc4.txt"));
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -144,11 +145,12 @@ public class ForestInfoParser {
 					return leafinfo; // break with null values, as its the last
 										// line of the file
 				}
-				
-				if(sCurrentLine.startsWith("p")){
+
+				if (sCurrentLine.startsWith("p")) {
 					leafinfo.add(0);
 					leafinfo.add(0);
 					leafinfo.add(0);
+					status = sCurrentLine.substring(2);
 				}
 
 				if (sCurrentLine.startsWith("a")) {
@@ -206,5 +208,9 @@ public class ForestInfoParser {
 			e.printStackTrace();
 		}
 		return leafinfo;
+	}
+
+	public String getStatus() {
+		return status;
 	}
 }
