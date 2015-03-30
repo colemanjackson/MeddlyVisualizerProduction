@@ -1,24 +1,19 @@
 package logic;
 
 import info.ForestInfo;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-
-import javafx.scene.text.*;
 import javafx.scene.chart.XYChart.Series;
 
 /**
  * A Static class which parses the information from Meddly for animation.
- * 
- * @author Coleman Jackson, 2015.
  *
  */
 public class ForestInfoParser {
-	private String status = "Initalized";
+	private String status;
 	private static ForestInfo forestInfo = null;
 	private static BufferedReader br = null;
 
@@ -26,9 +21,11 @@ public class ForestInfoParser {
 	 * 
 	 * @throws FileNotFoundException
 	 */
-	public ForestInfoParser() {
+	public ForestInfoParser(String filename) {
+		status = "Initalized";
 		try {
-			ForestInfoParser.br = new BufferedReader(new FileReader("qc4.txt"));
+			ForestInfoParser.br = new BufferedReader(new FileReader(filename));
+
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -47,7 +44,9 @@ public class ForestInfoParser {
 			// FILETYPE PARSE BLOCK
 			String fileType = br.readLine(); // does nothing yet
 
-			br.readLine(); // consume known comment line
+			br.readLine(); // consume known comment line TODO: LOOK HERE IF YOU
+							// CHANGE THE FILE FORMAT. IF YOU HAVE AN ERROR ITS
+							// HERE.
 
 			System.out.println(fileType);// error checking
 
@@ -80,8 +79,9 @@ public class ForestInfoParser {
 			// LEFT AND RIGHT INITIAL NODE PARSE BLOCK
 			if (index != 4)
 				index += 2; // if the index is not 4, then name was parsed and
-							// we are on a ", so increment to the next char
-							// index.
+			// we are on a ", so increment to the next char
+			// index.
+
 			// Use a string builder to build the strings for left and right
 			// counts, length of string unknown.
 			StringBuilder leftAndRightCountStringConverter = new StringBuilder();
@@ -92,6 +92,7 @@ public class ForestInfoParser {
 				leftAndRightCountStringConverter.append(stringOfForestInfo
 						.charAt(index));
 			}
+
 			int leftCount = Integer.parseInt(leftAndRightCountStringConverter
 					.toString());
 			leftAndRightCountStringConverter.delete(0,
@@ -126,12 +127,12 @@ public class ForestInfoParser {
 
 	/**
 	 * 
-	 * @return A 3 tuple arraylist representing the id, the level at which the
-	 *         anc happens, and the anc.
+	 * @return an arrayList that is populated with three values if parsing is
+	 *         successful, or 0 values if parsing fails or the stream is empty. 
 	 * @throws IOException
 	 */
 	public ArrayList<Integer> parseNodeInfo()
-			throws org.json.simple.parser.ParseException, IOException {
+			throws IOException {
 
 		ArrayList<Integer> leafinfo = new ArrayList<>(0);
 		try {
@@ -147,9 +148,9 @@ public class ForestInfoParser {
 				}
 
 				if (sCurrentLine.startsWith("p")) {
+					leafinfo.add(-1);
 					leafinfo.add(0);
-					leafinfo.add(0);
-					leafinfo.add(0);
+					leafinfo.add(1);
 					status = sCurrentLine.substring(2);
 				}
 
